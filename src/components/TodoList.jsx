@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   FiPlusSquare,
   FiCheck,
@@ -6,17 +6,39 @@ import {
   FiEdit,
   FiX,
   FiSettings,
+  FiPlus,
 } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { addTodo, toggleCompleted, updateTodo } from "../ToDoSlice";
 
 const TodoList = () => {
+  const today = new Date();
+  const dayOfWeek = today.toLocaleDateString("en-US", { weekday: "long" });
+  const month = today.toLocaleDateString("en-US", { month: "long" });
+  const date = today.toLocaleDateString("en-US", { day: "numeric" });
+  const [isInputFocus, setIsInputFocus] = useState(false);
+  const ref = useRef();
+
   const todoList = useSelector((state) => state.todo.todoList);
   const [showInput, setShowInput] = useState(false);
   const [newTask, setNewTask] = useState("");
   const [taskId, setTaskId] = useState(null);
   const [inputEditValue, setInputValue] = useState("");
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setIsInputFocus(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref]);
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -39,12 +61,40 @@ const TodoList = () => {
   };
 
   return (
-    <div className="flex flex-col space-y-2 pt-8">
-      {showInput && (
+    <div className="flex-1 p-8 bg-gray-100">
+      <p className="text-xl font-thin">My Day</p>
+      <p className="text-gray-600 text-sm">{`${dayOfWeek}, ${month} ${date}`}</p>
+      <div className="py-8">
+        <div className="shadow-sm" ref={ref}>
+          <div className="bg-white rounded border-1 px-4 py-2 flex space-x-2 items-center">
+            {isInputFocus ? (
+              <input className="w-4 h-4" type="checkbox" />
+            ) : (
+              <FiPlus className="text-blue-600 text-xl" />
+            )}
+            <input
+              type="text"
+              className={isInputFocus ? "text-black" : "text-blue-600"}
+              value="Add a task"
+              onFocus={() => setIsInputFocus(true)}
+            />
+          </div>
+          <div
+            className={`bg-gray-50 rounded border-1 flex space-x-2 items-center transition-all ${
+              isInputFocus ? "h-8" : "h-0"
+            }`}
+          >
+            <div className={`${isInputFocus ? "block px-4 py-2" : "hidden"}`}>
+              task 1
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* {showInput && (
         <form className="flex" onSubmit={onSubmit}>
           <input
             type="text"
-            className="h-10 p-2 border-2 border-yellow-300 rounded bg-transparent outline-none"
+            className="h-10 p-2 border-2 border-yellow-300 rounded bg-transparent "
             value={newTask}
             onChange={handleChange}
           />
@@ -76,7 +126,7 @@ const TodoList = () => {
           <li className="flex items-center space-x-1">
             {taskId && taskId === id ? (
               <input
-                className="border-2 border-black p-1 outline-none"
+                className="border-2 border-black p-1 "
                 type="text"
                 value={inputEditValue}
                 onChange={(e) => setInputValue(e.target.value)}
@@ -136,7 +186,7 @@ const TodoList = () => {
             )}
           </li>
         </ul>
-      ))}
+      ))} */}
     </div>
   );
 };

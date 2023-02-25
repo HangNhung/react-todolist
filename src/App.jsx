@@ -3,8 +3,8 @@ import TodoList from "./components/TodoList";
 
 function App() {
   return (
-    <div className="App font-Poppins py-8 px-16 min-h-screen mx-auto">
-      {/* <Heading /> */}
+    <div className="App font-Poppins min-h-screen mx-auto flex flex-col">
+      <Heading />
       <TodoList />
     </div>
   );
