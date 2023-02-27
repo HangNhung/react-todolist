@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FiPlus, FiCalendar } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
-import uuid from "react-uuid";
 import { addTodo, toggleCompleted, updateTodo } from "../ToDoSlice";
+import { create_UUID } from "../utils/uuid";
 import Checkbox from "./Checkbox";
 import Task from "./Task";
 
@@ -51,7 +51,7 @@ const TodoList = () => {
     e.preventDefault();
     dispatch(
       addTodo({
-        id: uuid(),
+        id: create_UUID(),
         task: newTask,
       })
     );
