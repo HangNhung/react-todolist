@@ -15,7 +15,7 @@ const Heading = () => {
   };
 
   return (
-    <div className="bg-blue-600 flex justify-between h-12 items-center px-8">
+    <div className="bg-blue-600 flex justify-between h-12 items-center px-8 py-4">
       <p className="font-bold text-white">To Do</p>
       <div className="h-8 w-96 flex items-center rounded bg-white">
         <VscSearch className="mx-2" />

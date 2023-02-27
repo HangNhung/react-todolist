@@ -1,15 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import {
-  FiPlusSquare,
-  FiCheck,
-  FiRefreshCcw,
-  FiEdit,
-  FiX,
-  FiSettings,
-  FiPlus,
-} from "react-icons/fi";
+import { FiPlus, FiCalendar } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
+import uuid from "react-uuid";
 import { addTodo, toggleCompleted, updateTodo } from "../ToDoSlice";
+import Checkbox from "./Checkbox";
+import Task from "./Task";
 
 const TodoList = () => {
   const today = new Date();
@@ -19,11 +14,14 @@ const TodoList = () => {
   const [isInputFocus, setIsInputFocus] = useState(false);
   const ref = useRef();
 
+  const [iconButton, setIconButton] = useState("");
+
   const todoList = useSelector((state) => state.todo.todoList);
   const [showInput, setShowInput] = useState(false);
   const [newTask, setNewTask] = useState("");
-  const [taskId, setTaskId] = useState(null);
-  const [inputEditValue, setInputValue] = useState("");
+
+  // const [taskId, setTaskId] = useState(null);
+  // const [inputEditValue, setInputValue] = useState("");
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -53,43 +51,77 @@ const TodoList = () => {
     e.preventDefault();
     dispatch(
       addTodo({
-        id: new Date(),
+        id: uuid(),
         task: newTask,
       })
     );
+    setNewTask("");
     toggleInput();
   };
 
   return (
-    <div className="flex-1 p-8 bg-gray-100">
-      <p className="text-xl font-thin">My Day</p>
-      <p className="text-gray-600 text-sm">{`${dayOfWeek}, ${month} ${date}`}</p>
-      <div className="py-8">
-        <div className="shadow-sm" ref={ref}>
-          <div className="bg-white rounded border-1 px-4 py-2 flex space-x-2 items-center">
+    <div className="flex-1 bg-gray-100 flex flex-col overflow-hidden">
+      <div className="p-8">
+        <p className="text-xl font-thin">My Day</p>
+        <p className="text-gray-600 text-sm">{`${dayOfWeek}, ${month} ${date}`}</p>
+      </div>
+      <div className="flex-1 flex flex-col space-y-2 overflow-hidden">
+        <form className="shadow-sm mx-8" ref={ref} onSubmit={onSubmit}>
+          <div className="h-12 bg-white rounded border-1 px-4 py-2 flex space-x-4 items-center">
             {isInputFocus ? (
-              <input className="w-4 h-4" type="checkbox" />
+              <button
+                type="button"
+                onMouseEnter={() => setIconButton("hover")}
+                onMouseLeave={() => setIconButton("")}
+              >
+                <Checkbox status={iconButton} />
+              </button>
             ) : (
               <FiPlus className="text-blue-600 text-xl" />
             )}
             <input
               type="text"
-              className={isInputFocus ? "text-black" : "text-blue-600"}
-              value="Add a task"
-              onFocus={() => setIsInputFocus(true)}
+              className={
+                isInputFocus
+                  ? "text-black"
+                  : "text-blue-600 placeholder-blue-600"
+              }
+              value={newTask}
+              placeholder="Add a task"
+              onFocus={() => {
+                setIsInputFocus(true);
+              }}
+              onChange={handleChange}
             />
           </div>
           <div
-            className={`bg-gray-50 rounded border-1 flex space-x-2 items-center transition-all ${
-              isInputFocus ? "h-8" : "h-0"
+            className={`bg-gray-50 rounded border-1 transition-all ${
+              isInputFocus ? "h-12" : "h-0"
             }`}
           >
-            <div className={`${isInputFocus ? "block px-4 py-2" : "hidden"}`}>
-              task 1
+            <div
+              className={isInputFocus ? "block relative px-4 py-2" : "hidden"}
+            >
+              <div className="flex justify-between items-center w-full">
+                <FiCalendar />
+                <button
+                  type="submit"
+                  className="border px-2 py-1 text-sm disabled:bg-white disabled:text-gray-200"
+                  disabled={!newTask}
+                >
+                  Add
+                </button>
+              </div>
             </div>
           </div>
+        </form>
+        <div className="flex-1 overflow-auto">
+          {todoList.map((props) => (
+            <Task key={props.id} {...props} />
+          ))}
         </div>
       </div>
+
       {/* {showInput && (
         <form className="flex" onSubmit={onSubmit}>
           <input
