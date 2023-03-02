@@ -16,6 +16,7 @@ const TodoSlice = createSlice({
       state.todoList.push({
         ...action.payload,
         completed: false,
+        important: false,
       });
     },
     sortTodo: (state, action) => {
@@ -36,10 +37,24 @@ const TodoSlice = createSlice({
         state.todoList[index].completed = !state.todoList[index].completed;
       }
     },
+    toggleImportant: (state, action) => {
+      const index = state.todoList.findIndex(
+        (item) => item.id == action.payload
+      );
+      if (index !== -1) {
+        state.todoList[index].important = !state.todoList[index].important;
+      }
+    },
   },
 });
 
-export const { setTodoList, addTodo, sortTodo, updateTodo, toggleCompleted } =
-  TodoSlice.actions;
+export const {
+  setTodoList,
+  addTodo,
+  sortTodo,
+  updateTodo,
+  toggleCompleted,
+  toggleImportant,
+} = TodoSlice.actions;
 
 export default TodoSlice.reducer;

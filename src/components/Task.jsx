@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FiEdit, FiStar, FiTrash2, FiX } from "react-icons/fi";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { HiOutlineStar, HiStar } from "react-icons/hi";
 import { useDispatch } from "react-redux";
-import { toggleCompleted } from "../ToDoSlice";
+import { toggleCompleted, toggleImportant } from "../ToDoSlice";
 import Checkbox from "./Checkbox";
 
-const Task = ({ id, task, date, completed }) => {
+const Task = ({ id, task, date, completed, important }) => {
   const dispatch = useDispatch();
   const [iconButton, setIconButton] = useState("");
 
@@ -37,10 +38,24 @@ const Task = ({ id, task, date, completed }) => {
           {date ? `${date} - ${task}` : task}
         </p>
       </div>
-      <div className="flex space-x-2">
+      <div className="flex space-x-2 items-center">
         <FiEdit className="text-blue-400" />
         <FiTrash2 className="text-gray-600" />
-        <FiStar className="text-yellow-400" />
+        <button
+          type="button"
+          onClick={() => {
+            dispatch(toggleImportant(id));
+          }}
+        >
+          {important ? (
+            <HiStar size="1.25rem" className="text-yellow-300" />
+          ) : (
+            <HiOutlineStar
+              size="1.25rem"
+              className="text-yellow-300 active:scale-50"
+            />
+          )}
+        </button>
       </div>
     </div>
   );

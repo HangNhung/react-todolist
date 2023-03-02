@@ -154,8 +154,9 @@ const TodoList = () => {
           </div>
         </form>
         <div className="flex-1 overflow-auto">
-          {todoList
+          {[...todoList]
             .filter((task) => !task.completed)
+            .sort((a, b) => b.important - a.important)
             .map((props) => (
               <Task key={props.id} {...props} />
             ))}
@@ -179,8 +180,9 @@ const TodoList = () => {
             </div>
           </div>
           {showCompletedList &&
-            todoList
+            [...todoList]
               .filter((task) => task.completed)
+              .sort((a, b) => b.important - a.important)
               .map((props) => <Task key={props.id} {...props} />)}
         </div>
       </div>
