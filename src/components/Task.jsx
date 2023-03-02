@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { toggleCompleted, toggleImportant } from "../ToDoSlice";
 import Checkbox from "./Checkbox";
 
-const Task = ({ id, task, date, completed, important }) => {
+const Task = ({ id, task, date, completed, important, onDelete }) => {
   const dispatch = useDispatch();
   const [iconButton, setIconButton] = useState("");
 
@@ -40,7 +40,7 @@ const Task = ({ id, task, date, completed, important }) => {
       </div>
       <div className="flex space-x-2 items-center">
         <FiEdit className="text-blue-400" />
-        <FiTrash2 className="text-gray-600" />
+        <FiTrash2 className="text-gray-600 cursor-pointer" onClick={onDelete} />
         <button
           type="button"
           onClick={() => {

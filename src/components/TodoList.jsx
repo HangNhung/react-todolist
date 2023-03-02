@@ -2,10 +2,11 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import { FiPlus, FiCalendar } from "react-icons/fi";
 import { IoIosArrowForward } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-import { addTodo } from "../ToDoSlice";
+import { addTodo, setTodoList } from "../ToDoSlice";
 import { create_UUID } from "../utils/uuid";
 import Checkbox from "./Checkbox";
 import DatePicker from "./DatePicker";
+import Modal from "./Modal";
 import Task from "./Task";
 
 const TodoList = () => {
@@ -15,6 +16,7 @@ const TodoList = () => {
   const date = today.toLocaleDateString("en-US", { day: "numeric" });
   const [isInputFocus, setIsInputFocus] = useState(false);
   const ref = useRef();
+  const currentTaskRef = useRef();
 
   const [iconButton, setIconButton] = useState("");
   // Date
@@ -22,6 +24,9 @@ const TodoList = () => {
   const [selected, setSelected] = useState();
 
   const [showCompletedList, setShowCompletedList] = useState(true);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const showDeleteModal = () => setOpenDeleteModal(true);
+  const closeDeleteModal = () => setOpenDeleteModal(false);
 
   const todoList = useSelector((state) => state.todo.todoList);
   const [showInput, setShowInput] = useState(false);
@@ -76,8 +81,24 @@ const TodoList = () => {
     return todoList.filter((task) => task.completed).length;
   }, [todoList]);
 
+  const deleteTask = () => {
+    let newTodoList = [...todoList].filter(
+      (task) => task.id !== currentTaskRef.current?.id
+    );
+    dispatch(setTodoList(newTodoList));
+    // close modal and clear ref
+    closeDeleteModal();
+    currentTaskRef.current = {};
+  };
+
   return (
-    <div className="flex-1 bg-gray-100 flex flex-col overflow-hidden">
+    <div className="flex-1 bg-gray-100 flex flex-col overflow-hidden relative">
+      <Modal
+        open={openDeleteModal}
+        close={closeDeleteModal}
+        task={currentTaskRef.current?.task}
+        onConfirm={deleteTask}
+      />
       <div className="p-8">
         <p className="text-xl font-thin">My Day</p>
         <p className="text-gray-600 text-sm">{`${dayOfWeek}, ${month} ${date}`}</p>
@@ -158,7 +179,14 @@ const TodoList = () => {
             .filter((task) => !task.completed)
             .sort((a, b) => b.important - a.important)
             .map((props) => (
-              <Task key={props.id} {...props} />
+              <Task
+                key={props.id}
+                {...props}
+                onDelete={() => {
+                  currentTaskRef.current = props;
+                  showDeleteModal();
+                }}
+              />
             ))}
           <div
             className={`${
@@ -183,7 +211,16 @@ const TodoList = () => {
             [...todoList]
               .filter((task) => task.completed)
               .sort((a, b) => b.important - a.important)
-              .map((props) => <Task key={props.id} {...props} />)}
+              .map((props) => (
+                <Task
+                  key={props.id}
+                  {...props}
+                  onDelete={() => {
+                    currentTaskRef.current = props;
+                    showDeleteModal();
+                  }}
+                />
+              ))}
         </div>
       </div>
     </div>
