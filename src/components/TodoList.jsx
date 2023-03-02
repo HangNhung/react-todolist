@@ -1,9 +1,11 @@
+import { format } from "date-fns";
 import React, { useState, useRef, useEffect } from "react";
 import { FiPlus, FiCalendar } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { addTodo, toggleCompleted, updateTodo } from "../ToDoSlice";
 import { create_UUID } from "../utils/uuid";
 import Checkbox from "./Checkbox";
+import DatePicker from "./DatePicker";
 import Task from "./Task";
 
 const TodoList = () => {
@@ -15,6 +17,9 @@ const TodoList = () => {
   const ref = useRef();
 
   const [iconButton, setIconButton] = useState("");
+  // Date
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [selected, setSelected] = useState();
 
   const todoList = useSelector((state) => state.todo.todoList);
   const [showInput, setShowInput] = useState(false);
@@ -53,10 +58,16 @@ const TodoList = () => {
       addTodo({
         id: create_UUID(),
         task: newTask,
+        date: selected,
       })
     );
     setNewTask("");
     toggleInput();
+  };
+
+  const onDateChange = (selectedDate) => {
+    setSelected(selectedDate);
+    setShowCalendar(false);
   };
 
   return (
@@ -89,6 +100,7 @@ const TodoList = () => {
               value={newTask}
               placeholder="Add a task"
               onFocus={() => {
+                // console.log("focus");
                 setIsInputFocus(true);
               }}
               onChange={handleChange}
@@ -103,7 +115,27 @@ const TodoList = () => {
               className={isInputFocus ? "block relative px-4 py-2" : "hidden"}
             >
               <div className="flex justify-between items-center w-full">
-                <FiCalendar />
+                <button
+                  type="button"
+                  className={`flex space-x-2 items-center ${
+                    Boolean(selected) ? "border border-gray-400" : ""
+                  }   rounded-md px-1} cursor-pointer`}
+                  onClick={() => {
+                    console.log("show calendar");
+                    setShowCalendar(!showCalendar);
+                  }}
+                >
+                  <FiCalendar className="relative" />
+
+                  {Boolean(selected) && <p className="text-sm">{selected}</p>}
+                </button>
+                <div
+                  className={`${
+                    showCalendar ? "visible opacity-1" : "invisible opacity-0"
+                  } absolute top-10 bg-white rounded shadow-sm transition-all`}
+                >
+                  <DatePicker onSave={onDateChange} />
+                </div>
                 <button
                   type="submit"
                   className="border px-2 py-1 text-sm disabled:bg-white disabled:text-gray-200"

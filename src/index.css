@@ -26,3 +26,16 @@ textarea:focus,
 input:focus {
   outline: none;
 }
+
+/* React Day Picker */
+.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: #2463EB;
+  --rdp-background-color: #e7edff;
+  /* Outline border for focused elements */
+  --rdp-outline: 2px solid var(--rdp-accent-color);
+  /* Outline border for focused and selected elements */
+  --rdp-outline-selected: 2px solid rgba(0, 0, 0, 0.75);
+}
+
+/* End - React Day Picker */

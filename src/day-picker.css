@@ -1,0 +1,9 @@
+/* .rdp-day_today:not(.rdp-day_outside) {
+  background-color: #2463EB;
+  color: white
+} */
+
+.rdp-day_selected {
+  background-color: #f0f3f7 !important;
+  color: black;
+}

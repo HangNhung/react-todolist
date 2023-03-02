@@ -8,7 +8,6 @@ import {
 const styleCheckbox = "text-xl text-blue-600 cursor-pointer";
 
 const Checkbox = ({ status, ...props }) => {
-  console.log(props);
   if (status === "completed") {
     return <RiCheckboxCircleFill className={styleCheckbox} {...props} />;
   } else if (status === "hover") {

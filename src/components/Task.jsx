@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { toggleCompleted } from "../ToDoSlice";
 import Checkbox from "./Checkbox";
 
-const Task = ({ id, task, completed }) => {
+const Task = ({ id, task, date, completed }) => {
   const dispatch = useDispatch();
   const [iconButton, setIconButton] = useState("");
 
@@ -33,7 +33,9 @@ const Task = ({ id, task, completed }) => {
             }}
           />
         </button>
-        <p className={completed ? "line-through" : ""}>{task}</p>
+        <p className={completed ? "line-through" : ""}>
+          {date ? `${date} - ${task}` : task}
+        </p>
       </div>
       <div className="flex space-x-2">
         <FiEdit className="text-blue-400" />
