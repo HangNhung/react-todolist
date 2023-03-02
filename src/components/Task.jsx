@@ -13,7 +13,7 @@ const Task = ({ id, task, date, completed }) => {
   }, [completed]);
 
   return (
-    <div className="mx-8 h-12 bg-white rounded border-1 px-4 py-2 flex justify-between space-x-4 items-center mb-4">
+    <div className="animate-slide-fade-down mx-8 h-12 bg-white rounded border-1 px-4 py-2 flex justify-between space-x-4 items-center mb-4">
       <div className="flex space-x-4">
         <button
           type="button"
